@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mango Makeup</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky-50: #f0f7ff;
+    --sky-100: #e0efff;
+    --sky-200: #baddff;
+    --sky-300: #8ec8ff;
+    --sky-400: #5aafff;
+    --sky-500: #3b94e6;
+    --sky-600: #2a6db3;
+    --sky-700: #1e4f80;
+    --rose-accent: #c4a0a0;
+    --cream: #fafcff;
+    --text-dark: #2c3e50;
+    --text-mid: #5a7a9b;
+    --text-light: #8bacc8;
+    --border: #d6e6f5;
+    --white: #ffffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    color: var(--text-dark);
+    background: var(--cream);
+    overflow-x: hidden;
+  }
+
+  /* ── Top Banner ── */
+  .top-stripe {
+    background: linear-gradient(135deg, var(--sky-400), var(--sky-300));
+    height: 6px;
+  }
+
+  .top-banner {
+    background: var(--sky-100);
+    padding: 8px 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .top-banner .marquee {
+    display: flex;
+    animation: scroll-left 25s linear infinite;
+    white-space: nowrap;
+  }
+
+  .top-banner .marquee span {
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    color: var(--sky-600);
+    padding: 0 40px;
+    font-weight: 400;
+  }
+
+  @keyframes scroll-left {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .promo-bar {
+    background: var(--sky-50);
+    text-align: center;
+    padding: 10px;
+    font-size: 13px;
+    color: var(--sky-600);
+    letter-spacing: 0.3px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── Navbar ── */
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 48px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: var(--text-mid);
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.3px;
+    transition: color 0.3s;
+    position: relative;
+  }
+
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 1.5px;
+    background: var(--sky-400);
+    transition: width 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--sky-500); }
+  .nav-links a:hover::after { width: 100%; }
+
+  .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--sky-600);
+    letter-spacing: 1px;
+    position: relative;
+  }
+
+  .logo::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 2px;
+    background: var(--sky-300);
+    border-radius: 2px;
+  }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .search-box {
+    display: flex;
+    align-items: center;
+    border: 1.5px solid var(--border);
+    border-radius: 24px;
+    padding: 6px 14px;
+    gap: 8px;
+    transition: border-color 0.3s;
+  }
+
+  .search-box:focus-within { border-color: var(--sky-400); }
+
+  .search-box input {
+    border: none;
+    outline: none;
+    font-family: 'Jost', sans-serif;
+    font-size: 13px;
+    color: var(--text-dark);
+    background: transparent;
+    width: 140px;
+  }
+
+  .search-box input::placeholder { color: var(--text-light); }
+
+  .icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-mid);
+    font-size: 20px;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+  }
+
+  .icon-btn:hover { color: var(--sky-500); }
+
+  /* ── Hero ── */
+  .hero {
+    position: relative;
+    height: 440px;
+    margin: 24px 48px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--sky-200) 0%, var(--sky-100) 40%, #dce8f5 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-bg-shapes {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .hero-bg-shapes .circle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.15;
+  }
+
+  .hero-bg-shapes .c1 {
+    width: 300px; height: 300px;
+    background: var(--sky-400);
+    top: -80px; left: -60px;
+    animation: float 8s ease-in-out infinite;
+  }
+
+  .hero-bg-shapes .c2 {
+    width: 200px; height: 200px;
+    background: var(--sky-300);
+    bottom: -40px; right: 10%;
+    animation: float 6s ease-in-out infinite 1s;
+  }
+
+  .hero-bg-shapes .c3 {
+    width: 150px; height: 150px;
+    background: var(--sky-500);
+    top: 20%; right: 25%;
+    animation: float 10s ease-in-out infinite 2s;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-20px) scale(1.05); }
+  }
+
+  .hero-text {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+  }
+
+  .hero-text h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 64px;
+    font-weight: 700;
+    font-style: italic;
+    color: var(--sky-700);
+    line-height: 1.1;
+    margin-bottom: 12px;
+    text-shadow: 0 2px 30px rgba(186, 221, 255, 0.5);
+  }
+
+  .hero-text p {
+    font-size: 15px;
+    color: var(--sky-600);
+    letter-spacing: 1px;
+    font-weight: 300;
+  }
+
+  /* side watermark */
+  .hero::before {
+    content: 'Mango · Mango · Mango · Mango · Mango ·';
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    color: var(--sky-400);
+    opacity: 0.3;
+    white-space: nowrap;
+    letter-spacing: 4px;
+    z-index: 1;
+  }
+
+  /* ── Products Section ── */
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--sky-700);
+    padding: 40px 48px 24px;
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    padding: 0 48px 40px;
+  }
+
+  .product-card {
+    background: var(--white);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+    cursor: pointer;
+  }
+
+  .product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 40px rgba(59, 148, 230, 0.12);
+  }
+
+  .product-img {
+    width: 100%;
+    aspect-ratio: 1;
+    background: var(--sky-50);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .product-img .placeholder-icon {
+    font-size: 48px;
+    opacity: 0.5;
+  }
+
+  .product-img .badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: var(--sky-400);
+    color: white;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+  }
+
+  .product-info {
+    padding: 16px;
+    text-align: center;
+  }
+
+  .product-info h3 {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+
+  .product-info .price {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--sky-600);
+  }
+
+  .see-all {
+    display: block;
+    width: fit-content;
+    margin: 0 auto 60px;
+    padding: 10px 28px;
+    border: 1.5px solid var(--sky-400);
+    border-radius: 24px;
+    background: transparent;
+    color: var(--sky-500);
+    font-family: 'Jost', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    letter-spacing: 0.3px;
+  }
+
+  .see-all:hover {
+    background: var(--sky-400);
+    color: white;
+  }
+
+  /* ── Trust Bar ── */
+  .trust-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--white);
+  }
+
+  .trust-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 20px;
+    gap: 10px;
+    position: relative;
+  }
+
+  .trust-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 20%;
+    height: 60%;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .trust-icon {
+    font-size: 28px;
+    color: var(--sky-400);
+  }
+
+  .trust-item h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-dark);
+  }
+
+  .trust-item p {
+    font-size: 12px;
+    color: var(--text-light);
+  }
+
+  /* ── Favorites ── */
+  .favorites-section {
+    background: linear-gradient(180deg, var(--sky-200) 0%, var(--sky-100) 100%);
+    padding: 50px 48px;
+    margin-top: 0;
+  }
+
+  .favorites-section .section-title {
+    text-align: center;
+    padding: 0 0 28px;
+    color: var(--sky-700);
+  }
+
+  .favorites-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+
+  .fav-card {
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.8);
+    transition: transform 0.3s;
+    cursor: pointer;
+  }
+
+  .fav-card:hover { transform: translateY(-4px); }
+
+  .fav-img {
+    width: 100%;
+    aspect-ratio: 1;
+    background: var(--sky-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .fav-img .placeholder-icon { font-size: 40px; opacity: 0.4; }
+
+  .fav-info {
+    padding: 14px;
+    text-align: center;
+  }
+
+  .fav-info h3 {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--white);
+    mix-blend-mode: normal;
+    color: var(--text-dark);
+    margin-bottom: 4px;
+  }
+
+  .fav-info .price {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--sky-600);
+  }
+
+  /* ── Footer ── */
+  footer {
+    background: var(--sky-50);
+    padding: 48px 48px 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 32px;
+  }
+
+  .footer-col h5 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--sky-700);
+    margin-bottom: 14px;
+  }
+
+  .footer-col a, .footer-col p {
+    display: block;
+    font-size: 13px;
+    color: var(--text-mid);
+    text-decoration: none;
+    margin-bottom: 8px;
+    transition: color 0.3s;
+  }
+
+  .footer-col a:hover { color: var(--sky-500); }
+
+  .footer-col .social-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+  }
+
+  .footer-bottom {
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-bottom p {
+    font-size: 11px;
+    color: var(--text-light);
+  }
+
+  .payment-methods {
+    display: flex;
+    gap: 8px;
+  }
+
+  .payment-pill {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 11px;
+    color: var(--text-mid);
+    font-weight: 500;
+  }
+
+  /* ── Animations ── */
+  .product-card, .fav-card, .trust-item {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.6s ease forwards;
+  }
+
+  .products-grid .product-card:nth-child(1) { animation-delay: 0.05s; }
+  .products-grid .product-card:nth-child(2) { animation-delay: 0.1s; }
+  .products-grid .product-card:nth-child(3) { animation-delay: 0.15s; }
+  .products-grid .product-card:nth-child(4) { animation-delay: 0.2s; }
+  .products-grid .product-card:nth-child(5) { animation-delay: 0.25s; }
+  .products-grid .product-card:nth-child(6) { animation-delay: 0.3s; }
+  .products-grid .product-card:nth-child(7) { animation-delay: 0.35s; }
+  .products-grid .product-card:nth-child(8) { animation-delay: 0.4s; }
+  .products-grid .product-card:nth-child(9) { animation-delay: 0.45s; }
+  .products-grid .product-card:nth-child(10) { animation-delay: 0.5s; }
+  .products-grid .product-card:nth-child(11) { animation-delay: 0.55s; }
+  .products-grid .product-card:nth-child(12) { animation-delay: 0.6s; }
+
+  .trust-item:nth-child(1) { animation-delay: 0.1s; }
+  .trust-item:nth-child(2) { animation-delay: 0.2s; }
+  .trust-item:nth-child(3) { animation-delay: 0.3s; }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .navbar { padding: 14px 20px; }
+    .hero { margin: 16px 20px; height: 300px; }
+    .hero-text h1 { font-size: 40px; }
+    .products-grid, .favorites-grid { grid-template-columns: repeat(2, 1fr); padding: 0 20px 30px; }
+    .section-title { padding: 30px 20px 16px; }
+    .favorites-section { padding: 40px 20px; }
+    .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    footer { padding: 32px 20px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Top Stripe -->
+<div class="top-stripe"></div>
+
+<!-- Marquee Banner -->
+<div class="top-banner">
+  <div class="marquee">
+    <span>Entregas en Corrientes y Resistencia. Envíos en Corrientes por motomandado y puntos pick it.</span>
+    <span>Entregas en Corrientes y Resistencia. Envíos en Corrientes por motomandado y puntos pick it.</span>
+    <span>Entregas en Corrientes y Resistencia. Envíos en Corrientes por motomandado y puntos pick it.</span>
+    <span>Entregas en Corrientes y Resistencia. Envíos en Corrientes por motomandado y puntos pick it.</span>
+  </div>
+</div>
+
+<!-- Promo bar -->
+<div class="promo-bar">Precios mayoristas en compras a partir de $30000</div>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <ul class="nav-links">
+    <li><a href="#">Inicio</a></li>
+    <li><a href="#">Productos ▾</a></li>
+    <li><a href="#">Contacto</a></li>
+  </ul>
+
+  <div class="logo">Mango</div>
+
+  <div class="nav-right">
+    <div class="search-box">
+      <input type="text" placeholder="¿Qué buscás?">
+      <button class="icon-btn">🔍</button>
+    </div>
+    <button class="icon-btn">👤</button>
+    <button class="icon-btn">🛒</button>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg-shapes">
+    <div class="circle c1"></div>
+    <div class="circle c2"></div>
+    <div class="circle c3"></div>
+  </div>
+  <div class="hero-text">
+    <h1>Be bold. Be you.</h1>
+    <p>Tu rutina de maquillaje en un solo lugar</p>
+  </div>
+</section>
+
+<!-- Products -->
+<h2 class="section-title">Productos</h2>
+<div class="products-grid">
+
+  <div class="product-card">
+    <div class="product-img">
+      <span class="placeholder-icon">💄</span>
+    </div>
+    <div class="product-info">
+      <h3>Polvo 2 en 1 Mely Love Covenant</h3>
+      <span class="price">$6.500</span>
+    </div>
+  </div>
+
+  <div class="product-card">
+    <div class="product-img">
+      <span class="placeholder-icon">🎨</span>
+      <span class="badge">Nuevo</span>
+    </div>
+    <div class="product-info">
+      <h3>Paleta de sombras Obsidian Ruby Rose</h3>
+      <span class="price">$13.000</span>
+    </div>
+  </div>
+
+  <div class="product-card">
+    <div class="product-img">
+      <span class="placeholder-icon">✨</span>
+    </div>
+    <div class="product-info">
+      <h3>Paleta de sombras Mystic Glow Ruby Rose</h3>
+      <span class="price">$10.000</span>
+    </div>
+  </div>
+
+  <div class="product-card">
+    <div class="product-img">
+      <span class="placeholder-icon">🌸</span>
+    </div>
+    <div class="product-info">
+      <h3>Paleta de sombras Radiant Eyes Ruby Rose</h3>
+      <span class="price">$9.200</span>
+    </div>
+  </div>
+
+  <div class="product-card">
+    <div class="product-img">
+      <span class="placeholder-icon">🔮</span>
+    </div>
+    <div class="product-info">
+      <h3>Paleta de sombras Astral Essence Ruby Rose</h3>
+      <span class="price">$9.200</span>
+    </div>
+  </div>
+
+  <div class="product-card">
+    <div class="product-img">
+      <span class="placeholder-icon">❄️</span>
+    </div>
+    <div class="product-info">
+      <h3>Paleta de sombras Winter Storm Ruby Rose</h3>
+      <span class="price">$12.600</span>
+    </div>
+  </div>
+
+  <div class="product-card">
+    <div class="product-img">
+      <span class="placeholder-icon">🌿</span>
+    </div>
+    <div class="product-info">
+      <h3>Paleta de sombras Spring Breeze Ruby Rose</h3>
+      <span class="price">$8.200</span>
+    </div>
+  </div>
+
+  <div class="product-card">
+    <div class="product-img">
+      <span class="placeholder-icon">☀️</span>
+    </div>
+    <div class="product-info">
+      <h3>Paleta de sombras Summer Ruby Rose</h3>
+      <span class="price">$8.200</span>
+    </div>
+  </div>
+
+  <div class="product-card">
+    <div class="product-img">
+      <span class="placeholder-icon">🌈</span>
+    </div>
+    <div class="product-info">
+      <h3>Paleta de sombras No Limit Ruby Rose</h3>
+      <span class="price">$4.600</span>
+    </div>
+  </div>
+
+  <div class="product-card">
+    <div class="product-img">
+      <span class="placeholder-icon">🎭</span>
+    </div>
+    <div class="product-info">
+      <h3>Pigmentos colores 🌈</h3>
+      <span class="price">$3.900</span>
+    </div>
+  </div>
+
+  <div class="product-card">
+    <div class="product-img">
+      <span class="placeholder-icon">💎</span>
+    </div>
+    <div class="product-info">
+      <h3>Pigmentos "Fantasy Dust"</h3>
+      <span class="price">$4.900</span>
+    </div>
+  </div>
+
+  <div class="product-card">
+    <div class="product-img">
+      <span class="placeholder-icon">🩷</span>
+    </div>
+    <div class="product-info">
+      <h3>Rubor Glow Dapop</h3>
+      <span class="price">$5.000</span>
+    </div>
+  </div>
+
+</div>
+
+<a href="#" class="see-all">Ver todos los productos</a>
+
+<!-- Trust Bar -->
+<div class="trust-bar">
+  <div class="trust-item">
+    <span class="trust-icon">🚚</span>
+    <h4>Enviamos tu compra</h4>
+    <p>Realizamos envíos y entregas</p>
+  </div>
+  <div class="trust-item">
+    <span class="trust-icon">🛒</span>
+    <h4>Pagá como quieras</h4>
+    <p>Pagá con transferencia o efectivo</p>
+  </div>
+  <div class="trust-item">
+    <span class="trust-icon">🔒</span>
+    <h4>Comprá con seguridad</h4>
+    <p>Tus datos siempre protegidos</p>
+  </div>
+</div>
+
+<!-- Favorites -->
+<section class="favorites-section">
+  <h2 class="section-title">Favoritos</h2>
+  <div class="favorites-grid">
+    <div class="fav-card">
+      <div class="fav-img"><span class="placeholder-icon">🩷</span></div>
+      <div class="fav-info">
+        <h3>Rubor Glow Dapop</h3>
+        <span class="price">$5.000</span>
+      </div>
+    </div>
+    <div class="fav-card">
+      <div class="fav-img"><span class="placeholder-icon">✨</span></div>
+      <div class="fav-info">
+        <h3>Paleta de sombras Mystic Glow Ruby Rose</h3>
+        <span class="price">$10.000</span>
+      </div>
+    </div>
+    <div class="fav-card">
+      <div class="fav-img"><span class="placeholder-icon">💄</span></div>
+      <div class="fav-info">
+        <h3>Contorno en barra de Dapop</h3>
+        <span class="price">$5.600</span>
+      </div>
+    </div>
+    <div class="fav-card">
+      <div class="fav-img"><span class="placeholder-icon">💧</span></div>
+      <div class="fav-info">
+        <h3>Corrector líquido Dapop</h3>
+        <span class="price">$3.500</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <h5>Páginas</h5>
+      <a href="#">Inicio</a>
+      <a href="#">Productos</a>
+      <a href="#">Contacto</a>
+    </div>
+    <div class="footer-col">
+      <h5>Contactanos</h5>
+      <p>📞 3794005366</p>
+      <p>✉️ mangomakeupar@gmail.com</p>
+    </div>
+    <div class="footer-col">
+      <h5>Seguinos</h5>
+      <a href="#" class="social-link">📸 Instagram</a>
+      <p style="margin-top: 12px; font-size: 11px; color: var(--text-light);">Creado con Tienda Negocio</p>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>Copyright Mango Makeup · 2024. Todos los derechos reservados.</p>
+    <div class="payment-methods">
+      <span class="payment-pill">Visa</span>
+      <span class="payment-pill">Mastercard</span>
+      <span class="payment-pill">Transferencia</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
