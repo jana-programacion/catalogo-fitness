@@ -38,6 +38,9 @@ function openProductModal(productId) {
   const sizeList  = p.sizes  ? p.sizes.split(',').map(s => s.trim()).filter(Boolean)  : [];
 
   // Chips de colores
+  const askColorsMsg = encodeURIComponent(`Hola! Vi la prenda "${p.name}" en la página y quería consultar si tienen otros colores disponibles.`);
+  const askColorsLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${askColorsMsg}`;
+
   const colorsHtml = colorList.length ? `
     <div class="modal-option-group">
       <span class="modal-option-label">Color: <strong id="selectedColorLabel">—</strong></span>
@@ -48,6 +51,7 @@ function openProductModal(productId) {
           return `<button class="color-chip${isLight ? ' light' : ''}" data-color="${c}" style="background:${hex}" title="${c}"></button>`;
         }).join('')}
       </div>
+    <a class="modal-ask-colors" href="${askColorsLink}" target="_blank" rel="noopener">¿No encontrás tu color? Consultanos</a>
     </div>` : '';
 
   // Chips de talles
