@@ -28,8 +28,9 @@
   .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1.5px; background: var(--sky-400); transition: width 0.3s; }
   .nav-links a:hover { color: var(--sky-500); }
   .nav-links a:hover::after { width: 100%; }
-  .logo { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 700; color: var(--sky-600); letter-spacing: 1px; position: relative; white-space: nowrap; }
-  .logo::after { content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); width: 40px; height: 2px; background: var(--sky-300); border-radius: 2px; }
+  .logo img { height: 48px; width: auto; display: block; }
+  @media (max-width: 640px) { .logo img { height: 36px; } }
+  @media (max-width: 480px) { .logo img { height: 30px; } }
   .nav-right { display: flex; align-items: center; gap: 16px; }
   .search-box { display: flex; align-items: center; border: 1.5px solid var(--border); border-radius: 24px; padding: 6px 14px; gap: 8px; transition: border-color 0.3s; }
   .search-box:focus-within { border-color: var(--sky-400); }
@@ -209,6 +210,39 @@
   @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
   .product-card, .fav-card, .trust-item { opacity: 0; animation: fadeUp 0.6s ease forwards; }
 
+  /* ── Product Detail Modal ── */
+  .product-modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 700; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+  .product-modal-backdrop.open { opacity: 1; pointer-events: all; }
+  .product-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -48%) scale(0.97); z-index: 701; background: var(--white); border-radius: 20px; width: min(860px, 94vw); max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 80px rgba(0,0,0,0.18); transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s; opacity: 0; pointer-events: none; }
+  .product-modal.open { transform: translate(-50%, -50%) scale(1); opacity: 1; pointer-events: all; }
+  .product-modal-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .modal-gallery { background: var(--sky-50); border-radius: 20px 0 0 20px; display: flex; flex-direction: column; gap: 0; overflow: hidden; }
+  .modal-main-img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+  .modal-main-placeholder { width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 80px; }
+  .modal-thumbnails { display: flex; gap: 8px; padding: 10px; overflow-x: auto; background: var(--sky-100); }
+  .modal-thumb { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; cursor: pointer; border: 2px solid transparent; flex-shrink: 0; transition: border-color 0.2s; }
+  .modal-thumb.active { border-color: var(--sky-500); }
+  .modal-details { padding: 32px 28px; display: flex; flex-direction: column; gap: 14px; }
+  .modal-close { position: absolute; top: 14px; right: 16px; background: rgba(0,0,0,0.06); border: none; cursor: pointer; font-size: 18px; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.2s; z-index: 5; }
+  .modal-close:hover { background: rgba(0,0,0,0.14); }
+  .modal-badge { display: inline-block; background: var(--sky-400); color: white; font-size: 11px; font-weight: 500; padding: 4px 12px; border-radius: 20px; align-self: flex-start; }
+  .modal-name { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 700; color: var(--text-dark); line-height: 1.2; }
+  .modal-desc { font-size: 14px; color: var(--text-mid); line-height: 1.6; }
+  .modal-price { font-size: 28px; font-weight: 600; color: var(--sky-600); }
+  .modal-meta { display: flex; flex-direction: column; gap: 6px; }
+  .modal-meta span { font-size: 13px; color: var(--text-mid); }
+  .modal-meta strong { color: var(--text-dark); }
+  .modal-add-btn { margin-top: auto; background: var(--sky-500); color: white; border: none; border-radius: 12px; padding: 14px; font-family: 'Jost', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+  .modal-add-btn:hover { background: var(--sky-600); }
+  @media (max-width: 640px) {
+    .product-modal-inner { grid-template-columns: 1fr; }
+    .modal-gallery { border-radius: 20px 20px 0 0; }
+    .modal-main-img, .modal-main-placeholder { aspect-ratio: 4/3; }
+    .modal-details { padding: 20px 18px; }
+    .modal-name { font-size: 20px; }
+    .modal-price { font-size: 22px; }
+  }
+
   .hamburger { display: none; background: none; border: none; cursor: pointer; flex-direction: column; gap: 5px; padding: 4px; z-index: 201; }
   .hamburger span { display: block; width: 24px; height: 2px; background: var(--sky-600); border-radius: 2px; transition: all 0.3s; }
   .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
@@ -232,7 +266,7 @@
   @media (max-width: 768px) {
     .hamburger { display: flex; } .nav-links { display: none; } .search-box { display: none; }
     .mobile-product-search { display: flex; margin: 0 16px 12px; }
-    .navbar { padding: 12px 16px; } .logo { font-size: 22px; } .logo::after { width: 28px; }
+    .navbar { padding: 12px 16px; }
     .hero { margin: 12px 16px; height: 260px; border-radius: 16px; } .hero-text h1 { font-size: 36px; } .hero-text p { font-size: 13px; } .hero::before { display: none; }
     .carousel-arrow { width: 36px; height: 36px; font-size: 15px; } .carousel-arrow.prev { left: 10px; } .carousel-arrow.next { right: 10px; }
     .section-title { padding: 28px 16px 16px; font-size: 24px; }
@@ -255,7 +289,7 @@
   }
   @media (max-width: 480px) {
     .promo-bar { font-size: 11px; padding: 8px 12px; } .top-banner .marquee span { font-size: 11px; }
-    .navbar { padding: 10px 12px; } .logo { font-size: 20px; } .logo::after { width: 22px; } .nav-right { gap: 10px; } .icon-btn { font-size: 18px; }
+    .navbar { padding: 10px 12px; } .nav-right { gap: 10px; } .icon-btn { font-size: 18px; }
     .hero { margin: 10px 12px; height: 200px; border-radius: 14px; } .hero-text h1 { font-size: 28px; } .hero-text p { font-size: 12px; letter-spacing: 0.5px; }
     .carousel-arrow { width: 32px; height: 32px; font-size: 13px; }
     .section-title { padding: 24px 12px 12px; font-size: 22px; }
@@ -284,7 +318,7 @@
 <nav class="navbar">
   <button class="hamburger" id="hamburger" aria-label="Menú"><span></span><span></span><span></span></button>
   <ul class="nav-links"><li><a href="#">Inicio</a></li><li><a href="#">Productos ▾</a></li><li><a href="#">Contacto</a></li></ul>
-  <div class="logo">My Clothes Fitness</div>
+  <div class="logo"><img src="https://i.postimg.cc/B6vzChFs/image.png" alt="My Clothes Fitness"></div>
   <div class="nav-right">
     <div class="search-box">
       <input type="text" placeholder="¿Qué buscás?" id="desktopSearch">
@@ -333,6 +367,15 @@
 <div class="floating-btns">
   <a href="https://www.instagram.com/my.clothesfitness/" target="_blank" class="float-btn instagram" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
   <a href="https://wa.me/5493489617189?text=Hola! Vengo desde la página web!" target="_blank" class="float-btn whatsapp" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
+</div>
+
+<div class="product-modal-backdrop" id="productModalBackdrop"></div>
+<div class="product-modal" id="productModal" style="position:fixed;">
+  <button class="modal-close" id="productModalClose" aria-label="Cerrar">✕</button>
+  <div class="product-modal-inner">
+    <div class="modal-gallery" id="modalGallery"></div>
+    <div class="modal-details" id="modalDetails"></div>
+  </div>
 </div>
 
 <div class="cart-drawer-backdrop" id="cartBackdrop"></div>
@@ -420,33 +463,71 @@ track.addEventListener('touchend', e => { const d = e.changedTouches[0].screenX 
 // ═══════════════════════════════════════════
 // FETCH PRODUCTS FROM GOOGLE SHEETS
 // ═══════════════════════════════════════════
+const CACHE_KEY = 'catalogo_products_v1';
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutos
+
+function parseProducts(data) {
+  return data.map((p, i) => ({
+    id: p.id || i + 1,
+    name: String(p.name || '').trim(),
+    description: String(p.description || '').trim(),
+    price: p.price ? Number(p.price) : null,
+    imageUrl: String(p.imageUrl || '').trim(),
+    category: String(p.category || '').trim(),
+    colors: String(p.colors || '').trim(),
+    sizes: String(p.sizes || '').trim(),
+    featured: p.featured === true || p.featured === 'TRUE' || p.featured === 'true',
+    badge: String(p.badge || '').trim(),
+    extraImages: String(p.extraImages || '').trim().split(',').map(u => u.trim()).filter(Boolean),
+  })).filter(p => p.name);
+}
+
+function renderAll() {
+  loadingEl.classList.add('hidden');
+  renderCategories();
+  renderProducts();
+  renderFavorites();
+}
+
+async function fetchAndCache() {
+  const res = await fetch(SHEETS_API);
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const data = await res.json();
+  const parsed = parseProducts(data);
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data: parsed }));
+  } catch (e) { /* localStorage lleno, ignorar */ }
+  return parsed;
+}
+
 async function loadProducts() {
-  loadingEl.classList.remove('hidden');
   errorEl.style.display = 'none';
+
+  // Intentar cargar desde caché primero
+  try {
+    const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+    if (cached && cached.data && cached.data.length > 0) {
+      products = cached.data;
+      renderAll();
+
+      // Si el caché expiró, actualizar en segundo plano silenciosamente
+      if (Date.now() - cached.ts > CACHE_TTL) {
+        fetchAndCache().then(fresh => {
+          products = fresh;
+          renderAll();
+        }).catch(() => { /* fallo silencioso, ya tenemos datos */ });
+      }
+      return;
+    }
+  } catch (e) { /* caché corrupto, ignorar */ }
+
+  // Sin caché: mostrar spinner y cargar de la API
+  loadingEl.classList.remove('hidden');
   grid.innerHTML = '';
 
   try {
-    const res = await fetch(SHEETS_API);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
-
-    products = data.map((p, i) => ({
-      id: p.id || i + 1,
-      name: String(p.name || '').trim(),
-      description: String(p.description || '').trim(),
-      price: p.price ? Number(p.price) : null,
-      imageUrl: String(p.imageUrl || '').trim(),
-      category: String(p.category || '').trim(),
-      colors: String(p.colors || '').trim(),
-      sizes: String(p.sizes || '').trim(),
-      featured: p.featured === true || p.featured === 'TRUE' || p.featured === 'true',
-      badge: String(p.badge || '').trim(),
-    })).filter(p => p.name);
-
-    loadingEl.classList.add('hidden');
-    renderCategories();
-    renderProducts();
-    renderFavorites();
+    products = await fetchAndCache();
+    renderAll();
   } catch (err) {
     console.error('Error loading products:', err);
     loadingEl.classList.add('hidden');
@@ -543,6 +624,7 @@ function renderFavorites() {
     card.className = 'fav-card';
     const img = p.imageUrl ? `<img src="${p.imageUrl}" alt="${p.name}" loading="lazy">` : `<span class="placeholder-icon">👕</span>`;
     card.innerHTML = `<div class="fav-img">${img}</div><div class="fav-info"><h3>${p.name}</h3><span class="price">${p.price ? '$'+p.price.toLocaleString('es-AR') : 'Consultar'}</span></div>`;
+    card.addEventListener('click', () => openProductModal(p.id));
     favGrid.appendChild(card);
   });
 }
@@ -639,12 +721,99 @@ function updateCartUI() {
   cartTotalEl.textContent = `$${totalPrice.toLocaleString('es-AR')}${hasConsultar ? '*' : ''}`;
 }
 
+// ═══════════════════════════════════════════
+// PRODUCT DETAIL MODAL
+// ═══════════════════════════════════════════
+const productModal = document.getElementById('productModal');
+const productModalBackdrop = document.getElementById('productModalBackdrop');
+
+function openProductModal(productId) {
+  const p = products.find(x => x.id == productId);
+  if (!p) return;
+
+  // Construir galería: combinar imageUrl + extraImages sin duplicados
+  const allImages = [];
+  if (p.imageUrl) allImages.push(p.imageUrl);
+  p.extraImages.forEach(u => { if (u && !allImages.includes(u)) allImages.push(u); });
+
+  const galleryEl = document.getElementById('modalGallery');
+  const detailsEl = document.getElementById('modalDetails');
+
+  // Imagen principal
+  let mainImgHtml = allImages.length > 0
+    ? `<img class="modal-main-img" id="modalMainImg" src="${allImages[0]}" alt="${p.name}">`
+    : `<div class="modal-main-placeholder">👕</div>`;
+
+  // Miniaturas (solo si hay más de 1 imagen)
+  let thumbsHtml = '';
+  if (allImages.length > 1) {
+    thumbsHtml = `<div class="modal-thumbnails" id="modalThumbs">` +
+      allImages.map((url, i) =>
+        `<img class="modal-thumb${i === 0 ? ' active' : ''}" src="${url}" data-idx="${i}" alt="Vista ${i+1}">`
+      ).join('') +
+    `</div>`;
+  }
+
+  galleryEl.innerHTML = mainImgHtml + thumbsHtml;
+
+  // Detalles
+  const badgeHtml = p.badge ? `<span class="modal-badge">${p.badge}</span>` : '';
+  const priceHtml = p.price ? `<span class="modal-price">$${p.price.toLocaleString('es-AR')}</span>` : `<span class="modal-price" style="font-size:18px;color:var(--text-mid)">Consultar precio</span>`;
+  const colorsHtml = p.colors ? `<span><strong>Colores:</strong> ${p.colors}</span>` : '';
+  const sizesHtml = p.sizes ? `<span><strong>Talles:</strong> ${p.sizes}</span>` : '';
+
+  detailsEl.innerHTML = `
+    ${badgeHtml}
+    <h2 class="modal-name">${p.name}</h2>
+    ${p.description ? `<p class="modal-desc">${p.description}</p>` : ''}
+    ${priceHtml}
+    <div class="modal-meta">${colorsHtml}${sizesHtml}</div>
+    <button class="modal-add-btn" data-id="${p.id}">🛒 Agregar al carrito</button>
+  `;
+
+  // Click en miniaturas
+  galleryEl.addEventListener('click', e => {
+    const thumb = e.target.closest('.modal-thumb');
+    if (!thumb) return;
+    const idx = parseInt(thumb.dataset.idx);
+    const mainImg = document.getElementById('modalMainImg');
+    if (mainImg) mainImg.src = allImages[idx];
+    galleryEl.querySelectorAll('.modal-thumb').forEach(t => t.classList.toggle('active', t === thumb));
+  });
+
+  // Click en "Agregar al carrito" dentro del modal
+  detailsEl.querySelector('.modal-add-btn').addEventListener('click', () => {
+    addToCart(p.id);
+    closeProductModal();
+    openCart();
+  });
+
+  productModal.classList.add('open');
+  productModalBackdrop.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeProductModal() {
+  productModal.classList.remove('open');
+  productModalBackdrop.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('productModalClose').addEventListener('click', closeProductModal);
+productModalBackdrop.addEventListener('click', closeProductModal);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeProductModal(); });
+
 grid.addEventListener('click', e => {
-  const btn = e.target.closest('.add-cart-btn'); if (!btn) return;
-  e.preventDefault(); e.stopPropagation();
-  addToCart(parseInt(btn.dataset.id));
-  btn.classList.add('added'); btn.textContent = '✓';
-  setTimeout(() => { btn.classList.remove('added'); btn.textContent = '🛒'; }, 800);
+  const btn = e.target.closest('.add-cart-btn');
+  if (btn) {
+    e.preventDefault(); e.stopPropagation();
+    addToCart(parseInt(btn.dataset.id));
+    btn.classList.add('added'); btn.textContent = '✓';
+    setTimeout(() => { btn.classList.remove('added'); btn.textContent = '🛒'; }, 800);
+    return;
+  }
+  const card = e.target.closest('.product-card');
+  if (card) openProductModal(card.dataset.productId);
 });
 
 cartItemsEl.addEventListener('click', e => {
