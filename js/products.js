@@ -27,6 +27,7 @@ function renderAll() {
   loadingEl.classList.add('hidden');
   renderCategories();
   renderProducts();
+  applyFilters();
 }
 
 async function fetchAndCache() {

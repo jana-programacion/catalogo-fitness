@@ -1,9 +1,21 @@
 // ── Testimonios: ticker automático ──
 const testimonials = [
-  { comment: 'Calidad increíble y súper cómodas para entrenar. Las uso todos los días y no pierden la forma ni el color.', name: 'Nombre Persona' },
-  { comment: 'Los talles son exactos y la atención fue excelente. Llegaron rapidísimo y bien empaquetadas.', name: 'Nombre Persona' },
-  { comment: 'Me encantaron los colores disponibles. Son exactamente como se ven en las fotos, sin sorpresas.', name: 'Nombre Persona' },
-  { comment: 'Las mejores prendas que compré para ir al gimnasio. Las recomiendo a todas mis amigas.', name: 'Nombre Persona' },
+  { 
+    comment: 'Muy buena la calidad y la atención, para entrenar vienen perfectas las prendas.', 
+    name: 'Ticiano' 
+  },
+  { 
+    comment: 'Super cómodo para ir a patinar!!! 😍', 
+    name: 'Jana' 
+  },
+  { 
+    comment: 'Tal cual las fotos, sin sorpresas!', 
+    name: 'Pablo' 
+  },
+  { 
+    comment: 'Las mejores prendas para ir al gym. Las recomiendo a todas mis amigas 💕', 
+    name: 'Celeste' 
+  },
 ];
 
 const testimonialsTrackEl = document.getElementById('testimonialsTrack');
