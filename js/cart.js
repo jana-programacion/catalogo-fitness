@@ -45,9 +45,26 @@ function changeQty(key, delta) {
   updateCartUI();
 }
 
+function calcDiscount() {
+  if (!PROMO_2DA_PRENDA) return 0;
+  // Expandir cada ítem por su qty en unidades individuales con precio
+  const units = [];
+  cart.forEach(c => {
+    if (c.product.price) {
+      for (let i = 0; i < c.qty; i++) units.push(c.product.price);
+    }
+  });
+  if (units.length < 2) return 0;
+  // La unidad más barata recibe 20% off
+  const cheapest = Math.min(...units);
+  return Math.round(cheapest * 0.20);
+}
+
 function updateCartUI() {
   const totalItems = cart.reduce((s, c) => s + c.qty, 0);
-  const totalPrice = cart.reduce((s, c) => s + (c.product.price || 0) * c.qty, 0);
+  const subtotal   = cart.reduce((s, c) => s + (c.product.price || 0) * c.qty, 0);
+  const discount   = calcDiscount();
+  const totalPrice = subtotal - discount;
   const hasConsultar = cart.some(c => !c.product.price);
 
   cartBadge.textContent = totalItems;
@@ -97,6 +114,22 @@ function updateCartUI() {
     cartItemsEl.appendChild(div);
   });
 
+  // Filas de descuento
+  const subtotalRow  = document.getElementById('cartSubtotalRow');
+  const discountRow  = document.getElementById('cartDiscountRow');
+  const subtotalEl   = document.getElementById('cartSubtotal');
+  const discountEl   = document.getElementById('cartDiscount');
+
+  if (discount > 0) {
+    subtotalRow.style.display  = '';
+    discountRow.style.display  = '';
+    subtotalEl.textContent     = `$${subtotal.toLocaleString('es-AR')}`;
+    discountEl.textContent     = `− $${discount.toLocaleString('es-AR')}`;
+  } else {
+    subtotalRow.style.display  = 'none';
+    discountRow.style.display  = 'none';
+  }
+
   cartTotalEl.textContent = `$${totalPrice.toLocaleString('es-AR')}${hasConsultar ? '*' : ''}`;
 }
 
@@ -113,8 +146,10 @@ document.getElementById('checkoutBtn').addEventListener('click', () => {
     const variants = [color, size].filter(Boolean).join(', ');
     msg += `• ${product.name}${variants ? ` (${variants})` : ''} x${qty} — ${ps}\n`;
   });
-  const total = cart.reduce((s, c) => s + (c.product.price || 0) * c.qty, 0);
-  msg += `\nTotal: $${total.toLocaleString('es-AR')}`;
+  const subtotal = cart.reduce((s, c) => s + (c.product.price || 0) * c.qty, 0);
+  const discount = calcDiscount();
+  if (discount > 0) msg += `\nDescuento 2da prenda 20% off: − $${discount.toLocaleString('es-AR')}`;
+  msg += `\nTotal: $${(subtotal - discount).toLocaleString('es-AR')}`;
   if (cart.some(c => !c.product.price)) msg += ' (algunos productos sujetos a consulta)';
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
 });

@@ -35,6 +35,10 @@ function syncSearch(value, source) {
   applyFilters();
 }
 
+document.getElementById('mobileCatSelect').addEventListener('change', e => {
+  setCategory(e.target.value);
+});
+
 document.getElementById('sortSelect').addEventListener('change', e => {
   activeSort = e.target.value;
   renderProducts();

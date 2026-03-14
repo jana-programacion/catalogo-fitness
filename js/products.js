@@ -92,6 +92,14 @@ function renderCategories() {
     catFiltersEl.appendChild(btn);
   });
 
+  // Select móvil de categorías
+  const mobileCatSelect = document.getElementById('mobileCatSelect');
+  if (mobileCatSelect) {
+    mobileCatSelect.innerHTML = '<option value="Todos">Categoría: Todos</option>' +
+      cats.map(c => `<option value="${c}">${c}</option>`).join('');
+    mobileCatSelect.value = activeCategory;
+  }
+
   // Dropdown del nav "Productos ▾"
   const navDropdown = document.getElementById('productosDropdown');
   if (navDropdown) {
@@ -117,6 +125,8 @@ function setCategory(cat) {
   catFiltersEl.querySelectorAll('.cat-btn').forEach(b =>
     b.classList.toggle('active', b.textContent === cat)
   );
+  const mobileCatSelect = document.getElementById('mobileCatSelect');
+  if (mobileCatSelect) mobileCatSelect.value = cat;
   applyFilters();
 }
 

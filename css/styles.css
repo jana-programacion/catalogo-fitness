@@ -12,7 +12,8 @@ body { font-family: 'Jost', sans-serif; color: var(--text-dark); background: var
 .top-banner .marquee { display: flex; animation: scroll-left 25s linear infinite; white-space: nowrap; }
 .top-banner .marquee span { font-size: 12px; letter-spacing: 0.5px; color: var(--sky-600); padding: 0 40px; font-weight: 400; }
 @keyframes scroll-left { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-.promo-bar { background: var(--sky-50); text-align: center; padding: 10px; font-size: 13px; color: var(--sky-600); letter-spacing: 0.3px; border-bottom: 1px solid var(--border); }
+.promo-bar { background: linear-gradient(90deg, var(--sky-700) 0%, var(--sky-500) 50%, var(--sky-700) 100%); background-size: 200% auto; animation: promo-shine 3s linear infinite; text-align: center; padding: 11px; font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 1.5px; color: white; text-transform: uppercase; }
+@keyframes promo-shine { 0% { background-position: 200% center; } 100% { background-position: -200% center; } }
 
 .navbar { display: flex; align-items: center; justify-content: space-between; padding: 16px 48px; background: var(--white); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
 .nav-links { display: flex; gap: 28px; list-style: none; }
@@ -29,8 +30,7 @@ body { font-family: 'Jost', sans-serif; color: var(--text-dark); background: var
 .nav-dropdown li a { display: block; padding: 9px 16px; font-size: 13px; color: var(--text-mid); text-decoration: none; transition: background 0.15s, color 0.15s; white-space: nowrap; }
 .nav-dropdown li a::after { display: none; }
 .nav-dropdown li a:hover { background: var(--sky-50); color: var(--sky-600); }
-.logo { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 700; color: var(--sky-600); letter-spacing: 1px; position: relative; white-space: nowrap; }
-.logo::after { content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); width: 40px; height: 2px; background: var(--sky-300); border-radius: 2px; }
+.logo { font-family: 'Barlow Condensed', sans-serif; font-size: 28px; font-weight: 800; color: var(--sky-700); letter-spacing: -0.5px; text-transform: uppercase; white-space: nowrap; }
 .nav-right { display: flex; align-items: center; gap: 16px; }
 .search-box { display: flex; align-items: center; border: 1.5px solid var(--border); border-radius: 24px; padding: 6px 14px; gap: 8px; transition: border-color 0.3s; }
 .search-box:focus-within { border-color: var(--sky-400); }
@@ -89,6 +89,7 @@ body { font-family: 'Jost', sans-serif; color: var(--text-dark); background: var
 .category-filters {
   display: flex; gap: 8px; flex-wrap: wrap; flex: 1;
 }
+.mobile-cat-select { display: none; }
 .cat-btn {
   padding: 6px 16px; border-radius: 20px; border: 1.5px solid var(--border);
   background: var(--white); color: var(--text-mid); font-family: 'Jost', sans-serif;
@@ -201,7 +202,11 @@ body { font-family: 'Jost', sans-serif; color: var(--text-dark); background: var
 .qty-btn:hover { border-color: var(--sky-400); color: var(--sky-500); }
 .cart-item-qty span { font-size: 14px; font-weight: 500; min-width: 18px; text-align: center; }
 .cart-footer { border-top: 1px solid var(--border); padding: 20px 24px; }
-.cart-total { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.cart-subtotal, .cart-discount-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.amount-sm { font-size: 14px; font-weight: 500; color: var(--text-dark); }
+.promo-label { color: var(--sky-600); font-weight: 500; }
+.discount-amount { color: #2e7d32; font-weight: 600; }
+.cart-total { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-top: 10px; border-top: 1px solid var(--border); }
 .cart-total .label { font-size: 14px; color: var(--text-mid); }
 .cart-total .amount { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 700; color: var(--sky-700); }
 .cart-checkout-btn { width: 100%; padding: 14px; background: var(--sky-500); color: white; border: none; border-radius: 12px; font-family: 'Jost', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; letter-spacing: 0.3px; transition: background 0.3s; }
@@ -216,6 +221,24 @@ footer { background: var(--sky-50); padding: 48px 48px 24px; border-top: 1px sol
 
 @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 .product-card, .fav-card, .trust-item { opacity: 0; animation: fadeUp 0.6s ease forwards; }
+
+/* ── Promo Popup Modal ── */
+.promo-modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 800; opacity: 0; pointer-events: none; transition: opacity 0.4s; }
+.promo-modal-backdrop.open { opacity: 1; pointer-events: all; }
+.promo-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -46%) scale(0.92); z-index: 801; width: min(420px, 92vw); border-radius: 24px; overflow: hidden; box-shadow: 0 32px 80px rgba(0,0,0,0.3); opacity: 0; pointer-events: none; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s; }
+.promo-modal.open { transform: translate(-50%, -50%) scale(1); opacity: 1; pointer-events: all; }
+.promo-modal-close { position: absolute; top: 12px; right: 14px; background: rgba(255,255,255,0.15); border: none; color: white; font-size: 16px; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; z-index: 2; }
+.promo-modal-close:hover { background: rgba(255,255,255,0.3); }
+.promo-modal-header { background: linear-gradient(135deg, var(--sky-700) 0%, var(--sky-500) 100%); padding: 40px 32px 32px; text-align: center; position: relative; }
+.promo-modal-tag { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 3px; color: rgba(255,255,255,0.75); text-transform: uppercase; display: block; margin-bottom: 8px; }
+.promo-modal-percent { font-family: 'Barlow Condensed', sans-serif; font-size: 110px; font-weight: 800; color: white; line-height: 1; letter-spacing: -4px; }
+.promo-modal-percent span { font-size: 60px; vertical-align: super; }
+.promo-modal-off { font-family: 'Barlow Condensed', sans-serif; font-size: 48px; font-weight: 800; color: rgba(255,255,255,0.85); letter-spacing: 6px; margin-top: -12px; }
+.promo-modal-body { background: var(--white); padding: 28px 32px 32px; text-align: center; }
+.promo-modal-title { font-family: 'Barlow Condensed', sans-serif; font-size: 26px; font-weight: 700; color: var(--sky-700); text-transform: uppercase; margin-bottom: 10px; }
+.promo-modal-sub { font-size: 14px; color: var(--text-mid); line-height: 1.6; margin-bottom: 24px; }
+.promo-modal-cta { width: 100%; padding: 15px; background: linear-gradient(135deg, var(--sky-500), var(--sky-700)); color: white; border: none; border-radius: 14px; font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s, transform 0.2s; }
+.promo-modal-cta:hover { opacity: 0.9; transform: scale(1.02); }
 
 /* ── Product Detail Modal ── */
 .product-modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 700; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
@@ -288,7 +311,7 @@ footer { background: var(--sky-50); padding: 48px 48px 24px; border-top: 1px sol
 @media (max-width: 768px) {
   .hamburger { display: flex; } .nav-links { display: none; } .search-box { display: none; }
   .mobile-product-search { display: flex; margin: 0 16px 12px; }
-  .navbar { padding: 12px 16px; } .logo { font-size: 22px; } .logo::after { width: 28px; }
+  .navbar { padding: 12px 16px; } .logo { font-size: 20px; }
   .hero { margin: 12px 16px; height: 260px; border-radius: 16px; } .hero::before { display: none; } .hero-overlay { padding: 24px 20px; } .hero-text h1 { font-size: 36px; } .hero-text p { font-size: 14px; letter-spacing: 2px; }
   .carousel-arrow { width: 36px; height: 36px; font-size: 15px; } .carousel-arrow.prev { left: 10px; } .carousel-arrow.next { right: 10px; }
   .section-title { padding: 28px 16px 16px; font-size: 24px; }
@@ -312,13 +335,15 @@ footer { background: var(--sky-50); padding: 48px 48px 24px; border-top: 1px sol
 }
 @media (max-width: 480px) {
   .promo-bar { font-size: 11px; padding: 8px 12px; } .top-banner .marquee span { font-size: 11px; }
-  .navbar { padding: 10px 12px; } .logo { font-size: 20px; } .logo::after { width: 22px; } .nav-right { gap: 10px; } .icon-btn { font-size: 18px; }
+  .navbar { padding: 10px 12px; } .logo { font-size: 18px; } .nav-right { gap: 10px; } .icon-btn { font-size: 18px; }
   .hero { margin: 10px 12px; height: 200px; border-radius: 14px; } .hero-overlay { padding: 18px 16px; } .hero-text h1 { font-size: 26px; } .hero-text p { font-size: 12px; letter-spacing: 1.5px; }
   .carousel-arrow { width: 32px; height: 32px; font-size: 13px; }
   .section-title { padding: 24px 12px 12px; font-size: 22px; }
   .mobile-product-search { margin: 0 12px 10px; padding: 8px 14px; }
   .mobile-product-search input { font-size: 13px; }
-  .products-toolbar { padding: 0 12px 10px; }
+  .products-toolbar { padding: 0 12px 10px; flex-wrap: wrap; }
+  .category-filters { display: none; }
+  .mobile-cat-select { display: block; flex: 1; appearance: none; -webkit-appearance: none; background: var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238bacc8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 12px center; border: 1.5px solid var(--border); border-radius: 20px; padding: 7px 32px 7px 14px; font-family: 'Jost', sans-serif; font-size: 13px; color: var(--text-mid); cursor: pointer; }
   .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 12px 24px; }
   .product-card { border-radius: 10px; } .product-info { padding: 10px; } .product-info h3 { font-size: 12px; line-height: 1.3; } .product-info .description { display: none; } .product-info .sizes { display: none; } .product-info .price { font-size: 13px; }
   .product-img .badge { font-size: 10px; padding: 3px 8px; top: 8px; left: 8px; }
