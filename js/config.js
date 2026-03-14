@@ -15,3 +15,4 @@ let products = [];
 let activeCategory = 'Todos';
 let activeSort = 'destacados';
 let cart = [];
+let visibleLimit = 12;

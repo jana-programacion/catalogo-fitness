@@ -49,9 +49,9 @@
 
 <div class="mobile-nav" id="mobileNav">
   <div class="mobile-search"><input type="text" placeholder="¿Qué buscás?" id="mobileSearchInput"><span>🔍</span></div>
-  <a href="#" onclick="closeMobileNav()">Inicio</a>
-  <a href="#" onclick="closeMobileNav()">Productos</a>
-  <a href="#" onclick="closeMobileNav()">Contacto</a>
+  <a href="#" onclick="closeMobileNav(); window.scrollTo({top:0,behavior:'smooth'}); return false;">Inicio</a>
+  <a href="#productsSection" onclick="closeMobileNav(); setTimeout(()=>document.getElementById('productsSection').scrollIntoView({behavior:'smooth'}),300); return false;">Productos</a>
+  <a href="#" onclick="closeMobileNav(); setTimeout(()=>document.querySelector('footer').scrollIntoView({behavior:'smooth'}),300); return false;">Contacto</a>
 </div>
 
 <section class="hero">
@@ -83,6 +83,9 @@
 <div class="products-loading" id="productsLoading"><div class="spinner"></div><p>Cargando productos...</p></div>
 <div class="products-error" id="productsError"><span>⚠️</span><p>No pudimos cargar los productos</p><button class="retry-btn" id="retryBtn">Reintentar</button></div>
 <div class="products-grid" id="productsGrid"></div>
+<div class="load-more-wrap" id="loadMoreWrap" style="display:none;">
+  <button class="load-more-btn" id="loadMoreBtn">Ver más productos</button>
+</div>
 <div class="no-results" id="noResults"><span>🔍</span><p>No encontramos productos con ese nombre</p></div>
 
 <div class="trust-bar">
@@ -91,7 +94,13 @@
   <div class="trust-item"><span class="trust-icon">🔒</span><div><h4>Comprá con seguridad</h4><p>No necesitás registrarte ni dejar tus datos</p></div></div>
 </div>
 
-<section class="favorites-section"><h2 class="section-title">Favoritos</h2><div class="favorites-grid" id="favoritesGrid"></div></section>
+<section class="testimonials-section">
+  <p class="testimonials-eyebrow">Opiniones</p>
+  <h2 class="testimonials-title">Lo que dicen nuestras clientas</h2>
+  <div class="testimonials-ticker">
+    <div class="testimonials-track" id="testimonialsTrack"></div>
+  </div>
+</section>
 
 <footer><div class="footer-grid">
   <div class="footer-col"><h5>Páginas</h5><a href="#">Inicio</a><a href="#">Productos</a><a href="#">Contacto</a></div>
@@ -150,6 +159,7 @@
 <script src="js/search.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/modal.js"></script>
+<script src="js/testimonials.js"></script>
 <script src="js/nav.js"></script>
 
 </body>

@@ -10,28 +10,41 @@ function getSearchQuery() {
   return desktopSearch.value || mobileSearchInput.value || mobileProductSearchInput.value || '';
 }
 
+const loadMoreWrap = document.getElementById('loadMoreWrap');
+
 function applyFilters() {
   const q = normalize(getSearchQuery());
   const words = q.split(/\s+/).filter(Boolean);
   const cards = grid.querySelectorAll('.product-card');
-  let visibleCount = 0;
+  let matchCount = 0;
 
   cards.forEach(card => {
     const haystack = normalize(card.dataset.name + ' ' + card.dataset.desc + ' ' + card.dataset.category);
     const matchesSearch = !q || words.every(w => haystack.includes(w));
     const matchesCat = activeCategory === 'Todos' || card.dataset.category === activeCategory;
-    const show = matchesSearch && matchesCat;
-    card.style.display = show ? '' : 'none';
-    if (show) visibleCount++;
+    const matches = matchesSearch && matchesCat;
+    if (matches) {
+      matchCount++;
+      card.style.display = matchCount <= visibleLimit ? '' : 'none';
+    } else {
+      card.style.display = 'none';
+    }
   });
 
-  noResults.style.display = visibleCount === 0 && products.length > 0 ? '' : 'none';
+  noResults.style.display = matchCount === 0 && products.length > 0 ? '' : 'none';
+  loadMoreWrap.style.display = matchCount > visibleLimit ? '' : 'none';
 }
+
+document.getElementById('loadMoreBtn').addEventListener('click', () => {
+  visibleLimit += 12;
+  applyFilters();
+});
 
 function syncSearch(value, source) {
   if (source !== desktopSearch) desktopSearch.value = value;
   if (source !== mobileSearchInput) mobileSearchInput.value = value;
   if (source !== mobileProductSearchInput) mobileProductSearchInput.value = value;
+  visibleLimit = 12;
   applyFilters();
 }
 
@@ -41,6 +54,7 @@ document.getElementById('mobileCatSelect').addEventListener('change', e => {
 
 document.getElementById('sortSelect').addEventListener('change', e => {
   activeSort = e.target.value;
+  visibleLimit = 12;
   renderProducts();
   applyFilters();
 });
@@ -53,6 +67,7 @@ mobileProductSearchInput.addEventListener('input', e => syncSearch(e.target.valu
   input.addEventListener('keydown', e => {
     if (e.key === 'Enter') {
       e.preventDefault();
+      if (input === mobileSearchInput) closeMobileNav();
       applyFilters();
       grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }

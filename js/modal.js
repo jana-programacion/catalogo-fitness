@@ -73,6 +73,7 @@ function openProductModal(productId) {
     ${sizesHtml}
     <p class="modal-selection-error" id="modalSelectionError"></p>
     <button class="modal-add-btn" data-id="${p.id}">🛒 Agregar al carrito</button>
+    <button class="modal-share-btn" id="modalShareBtn">🔗 Compartir producto</button>
   `;
 
   // Estado de selección
@@ -110,6 +111,18 @@ function openProductModal(productId) {
     galleryEl.querySelectorAll('.modal-thumb').forEach(t => t.classList.toggle('active', t === thumb));
   });
 
+  // Compartir enlace
+  const shareBtn = document.getElementById('modalShareBtn');
+  shareBtn.addEventListener('click', () => {
+    const url = `${location.origin}${location.pathname}?product=${p.id}`;
+    navigator.clipboard.writeText(url).then(() => {
+      shareBtn.textContent = '✓ Enlace copiado';
+      setTimeout(() => { shareBtn.textContent = '🔗 Compartir producto'; }, 2000);
+    }).catch(() => {
+      prompt('Copiá este enlace:', url);
+    });
+  });
+
   // Agregar al carrito con validación
   detailsEl.querySelector('.modal-add-btn').addEventListener('click', () => {
     const errorEl = document.getElementById('modalSelectionError');
@@ -120,12 +133,14 @@ function openProductModal(productId) {
     openCart();
   });
 
+  history.replaceState(null, '', `?product=${p.id}`);
   productModal.classList.add('open');
   productModalBackdrop.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 
 function closeProductModal() {
+  history.replaceState(null, '', location.pathname);
   productModal.classList.remove('open');
   productModalBackdrop.classList.remove('open');
   document.body.style.overflow = '';

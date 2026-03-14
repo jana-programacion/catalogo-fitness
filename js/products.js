@@ -6,7 +6,6 @@ const grid = document.getElementById('productsGrid');
 const loadingEl = document.getElementById('productsLoading');
 const errorEl = document.getElementById('productsError');
 const catFiltersEl = document.getElementById('categoryFilters');
-const favGrid = document.getElementById('favoritesGrid');
 
 function parseProducts(data) {
   return data.map((p, i) => ({
@@ -28,7 +27,6 @@ function renderAll() {
   loadingEl.classList.add('hidden');
   renderCategories();
   renderProducts();
-  renderFavorites();
 }
 
 async function fetchAndCache() {
@@ -122,6 +120,7 @@ function renderCategories() {
 
 function setCategory(cat) {
   activeCategory = cat;
+  visibleLimit = 12;
   catFiltersEl.querySelectorAll('.cat-btn').forEach(b =>
     b.classList.toggle('active', b.textContent === cat)
   );
@@ -192,27 +191,3 @@ function renderProducts() {
   });
 }
 
-// ── Favoritos ──
-function renderFavorites() {
-  favGrid.innerHTML = '';
-  const favs = products.filter(p => p.featured);
-  const section = document.querySelector('.favorites-section');
-  section.style.display = favs.length === 0 ? 'none' : '';
-
-  favs.forEach(p => {
-    const card = document.createElement('div');
-    card.className = 'fav-card';
-    const img = p.imageUrl
-      ? `<img src="${p.imageUrl}" alt="${p.name}" loading="lazy">`
-      : `<span class="placeholder-icon">👕</span>`;
-    card.innerHTML = `
-      <div class="fav-img">${img}</div>
-      <div class="fav-info">
-        <h3>${p.name}</h3>
-        <span class="price">${p.price ? '$' + p.price.toLocaleString('es-AR') : 'Consultar'}</span>
-      </div>
-    `;
-    card.addEventListener('click', () => openProductModal(p.id));
-    favGrid.appendChild(card);
-  });
-}

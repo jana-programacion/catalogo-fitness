@@ -43,4 +43,10 @@ if (PROMO_2DA_PRENDA && !sessionStorage.getItem('promoSeen')) {
 }
 
 // ── Init ──
-loadProducts();
+loadProducts().then(() => {
+  const pid = new URLSearchParams(location.search).get('product');
+  if (pid) {
+    const p = products.find(x => String(x.id) === pid);
+    if (p) openProductModal(p.id);
+  }
+});
