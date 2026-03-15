@@ -189,7 +189,7 @@ body { font-family: 'Jost', sans-serif; color: var(--text-dark); background: var
 
 .cart-drawer-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 600; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
 .cart-drawer-backdrop.open { opacity: 1; pointer-events: all; }
-.cart-drawer { position: fixed; top: 0; right: 0; width: 380px; max-width: 92vw; height: 100vh; background: var(--white); z-index: 601; transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.42, 0, 0.12, 1); display: flex; flex-direction: column; box-shadow: -8px 0 40px rgba(0,0,0,0.1); }
+.cart-drawer { position: fixed; top: 0; right: 0; width: 380px; max-width: 92vw; height: 100vh; height: 100dvh; background: var(--white); z-index: 601; transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.42, 0, 0.12, 1); display: flex; flex-direction: column; box-shadow: -8px 0 40px rgba(0,0,0,0.1); }
 .cart-drawer.open { transform: translateX(0); }
 .cart-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid var(--border); }
 .cart-header h3 { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--sky-700); }
@@ -210,7 +210,7 @@ body { font-family: 'Jost', sans-serif; color: var(--text-dark); background: var
 .qty-btn { width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--border); background: var(--white); cursor: pointer; font-size: 14px; font-weight: 600; color: var(--text-mid); display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
 .qty-btn:hover { border-color: var(--sky-400); color: var(--sky-500); }
 .cart-item-qty span { font-size: 14px; font-weight: 500; min-width: 18px; text-align: center; }
-.cart-footer { border-top: 1px solid var(--border); padding: 20px 24px; }
+.cart-footer { border-top: 1px solid var(--border); padding: 20px 24px; padding-bottom: max(20px, env(safe-area-inset-bottom)); }
 .cart-subtotal, .cart-discount-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 .amount-sm { font-size: 14px; font-weight: 500; color: var(--text-dark); }
 .promo-label { color: var(--sky-600); font-weight: 500; }
