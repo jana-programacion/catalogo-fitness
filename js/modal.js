@@ -25,8 +25,11 @@ function openProductModal(productId) {
   let currentImgIdx = 0;
   const expandBtn = `<button class="modal-img-expand" id="modalImgExpand" title="Ver imagen completa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>`;
   const nextBtn = allImages.length > 1 ? `<button class="modal-img-next" id="modalImgNext">›</button>` : '';
+  const dotsHtml = allImages.length > 1
+    ? `<div class="modal-dots" id="modalDots">${allImages.map((_, i) => `<span class="modal-dot${i === 0 ? ' active' : ''}"></span>`).join('')}</div>`
+    : '';
   const mainImgHtml = allImages.length > 0
-    ? `<div class="modal-img-wrap loading"><img class="modal-main-img" id="modalMainImg" src="${allImages[0]}" alt="${p.name}">${nextBtn}${expandBtn}</div>`
+    ? `<div class="modal-img-wrap loading"><img class="modal-main-img" id="modalMainImg" src="${allImages[0]}" alt="${p.name}">${nextBtn}${dotsHtml}${expandBtn}</div>`
     : `<div class="modal-img-wrap"><div class="modal-main-placeholder">👕</div>${expandBtn}</div>`;
   const thumbsHtml = allImages.length > 1
     ? `<div class="modal-thumbnails">` +
@@ -57,6 +60,7 @@ function openProductModal(productId) {
     galleryEl.querySelectorAll('.modal-thumb').forEach((t, i) => t.classList.toggle('active', i === currentImgIdx));
     const nextBtn = document.getElementById('modalImgNext');
     if (nextBtn) nextBtn.style.display = currentImgIdx === allImages.length - 1 ? 'none' : 'flex';
+    galleryEl.querySelectorAll('#modalDots .modal-dot').forEach((d, i) => d.classList.toggle('active', i === currentImgIdx));
   }
 
   // Parsear colores y talles
