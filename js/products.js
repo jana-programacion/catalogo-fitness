@@ -7,6 +7,15 @@ const loadingEl = document.getElementById('productsLoading');
 const errorEl = document.getElementById('productsError');
 const catFiltersEl = document.getElementById('categoryFilters');
 
+// Soporta separador | (pipe) y ,https:// (retrocompat con Cloudinary que tiene comas en params)
+function parseExtraImages(raw) {
+  return String(raw || '').trim()
+    .split('|')
+    .flatMap(seg => seg.split(',https://').map((u, i) => i === 0 ? u : 'https://' + u))
+    .map(u => u.trim())
+    .filter(Boolean);
+}
+
 function parseProducts(data) {
   return data.map((p, i) => ({
     id: p.id || i + 1,
@@ -19,7 +28,7 @@ function parseProducts(data) {
     sizes: String(p.sizes || '').trim(),
     featured: p.featured === true || p.featured === 'TRUE' || p.featured === 'true',
     badge: String(p.badge || '').trim(),
-    extraImages: String(p.extraImages || '').trim().split('|').flatMap(seg => seg.split(',https://').map((u, i) => i === 0 ? u : 'https://' + u)).map(u => u.trim()).filter(Boolean),
+    extraImages: parseExtraImages(p.extraImages),
   })).filter(p => p.name);
 }
 
@@ -151,8 +160,11 @@ function getSortedProducts() {
       return b.price - a.price;
     });
   } else {
-    // Destacados primero
-    list.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+    // Badge primero, luego destacados
+    list.sort((a, b) => {
+      const diff = (b.badge ? 1 : 0) - (a.badge ? 1 : 0);
+      return diff !== 0 ? diff : (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
+    });
   }
   return list;
 }
