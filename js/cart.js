@@ -1,4 +1,25 @@
 // ── Carrito ──
+const CART_KEY = 'catalogo_cart_v1';
+
+function saveCart() {
+  try {
+    localStorage.setItem(CART_KEY, JSON.stringify(
+      cart.map(({ key, product, color, size, qty }) => ({ key, pid: product.id, color, size, qty }))
+    ));
+  } catch(e) {}
+}
+
+function loadCart() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+    cart = saved.map(({ key, pid, color, size, qty }) => {
+      const product = products.find(p => p.id == pid);
+      return product ? { key, product, color, size, qty } : null;
+    }).filter(Boolean);
+    updateCartUI();
+  } catch(e) { cart = []; }
+}
+
 const cartBadge = document.getElementById('cartBadge');
 const cartDrawer = document.getElementById('cartDrawer');
 const cartBackdrop = document.getElementById('cartBackdrop');
@@ -131,6 +152,7 @@ function updateCartUI() {
   }
 
   cartTotalEl.textContent = `$${totalPrice.toLocaleString('es-AR')}${hasConsultar ? '*' : ''}`;
+  saveCart();
 }
 
 cartItemsEl.addEventListener('click', e => {

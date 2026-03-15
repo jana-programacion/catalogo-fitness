@@ -22,9 +22,12 @@ function openProductModal(productId) {
   const detailsEl = document.getElementById('modalDetails');
 
   // Galería
+  let currentImgIdx = 0;
+  const expandBtn = `<button class="modal-img-expand" id="modalImgExpand" title="Ver imagen completa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>`;
+  const nextBtn = allImages.length > 1 ? `<button class="modal-img-next" id="modalImgNext">›</button>` : '';
   const mainImgHtml = allImages.length > 0
-    ? `<img class="modal-main-img" id="modalMainImg" src="${allImages[0]}" alt="${p.name}">`
-    : `<div class="modal-main-placeholder">👕</div>`;
+    ? `<div class="modal-img-wrap loading"><img class="modal-main-img" id="modalMainImg" src="${allImages[0]}" alt="${p.name}">${nextBtn}${expandBtn}</div>`
+    : `<div class="modal-img-wrap"><div class="modal-main-placeholder">👕</div>${expandBtn}</div>`;
   const thumbsHtml = allImages.length > 1
     ? `<div class="modal-thumbnails">` +
       allImages.map((url, i) =>
@@ -32,6 +35,29 @@ function openProductModal(productId) {
       ).join('') + `</div>`
     : '';
   galleryEl.innerHTML = mainImgHtml + thumbsHtml;
+
+  // Shimmer: marcar como loaded cuando la imagen termina de cargar
+  const mainImgEl = document.getElementById('modalMainImg');
+  if (mainImgEl) {
+    const wrap = mainImgEl.closest('.modal-img-wrap');
+    const onMainLoad = () => { mainImgEl.classList.add('loaded'); if (wrap) wrap.classList.remove('loading'); };
+    if (mainImgEl.complete && mainImgEl.naturalWidth > 0) onMainLoad();
+    else mainImgEl.addEventListener('load', onMainLoad);
+  }
+  galleryEl.querySelectorAll('.modal-thumb').forEach(img => {
+    const onLoad = () => img.classList.add('loaded');
+    if (img.complete && img.naturalWidth > 0) onLoad();
+    else img.addEventListener('load', onLoad);
+  });
+
+  function goToImage(idx) {
+    currentImgIdx = Math.max(0, Math.min(idx, allImages.length - 1));
+    const mainImg = document.getElementById('modalMainImg');
+    if (mainImg) mainImg.src = allImages[currentImgIdx];
+    galleryEl.querySelectorAll('.modal-thumb').forEach((t, i) => t.classList.toggle('active', i === currentImgIdx));
+    const nextBtn = document.getElementById('modalImgNext');
+    if (nextBtn) nextBtn.style.display = currentImgIdx === allImages.length - 1 ? 'none' : 'flex';
+  }
 
   // Parsear colores y talles
   const colorList = p.colors ? p.colors.split(',').map(c => c.trim()).filter(Boolean) : [];
@@ -76,8 +102,10 @@ function openProductModal(productId) {
     ${colorsHtml}
     ${sizesHtml}
     <p class="modal-selection-error" id="modalSelectionError"></p>
-    <button class="modal-add-btn" data-id="${p.id}">🛒 Agregar al carrito</button>
-    <button class="modal-share-btn" id="modalShareBtn">🔗 Compartir producto</button>
+    <div class="modal-actions-row">
+      <button class="modal-add-btn" data-id="${p.id}">🛒 Agregar al carrito</button>
+      <button class="modal-share-btn" id="modalShareBtn" title="Compartir producto">🔗</button>
+    </div>
   `;
 
   // Estado de selección
@@ -109,22 +137,110 @@ function openProductModal(productId) {
   // Miniaturas
   galleryEl.addEventListener('click', e => {
     const thumb = e.target.closest('.modal-thumb');
-    if (!thumb) return;
-    const mainImg = document.getElementById('modalMainImg');
-    if (mainImg) mainImg.src = allImages[parseInt(thumb.dataset.idx)];
-    galleryEl.querySelectorAll('.modal-thumb').forEach(t => t.classList.toggle('active', t === thumb));
+    if (thumb) { goToImage(parseInt(thumb.dataset.idx)); return; }
+    const next = e.target.closest('.modal-img-next');
+    if (next) { goToImage(currentImgIdx + 1); return; }
+  });
+
+  // Swipe táctil en la imagen
+  if (allImages.length > 1) {
+    const imgWrap = galleryEl.querySelector('.modal-img-wrap');
+    let touchStartX = 0;
+    let swipeImg = null;
+    let goLeft = false;
+
+    imgWrap.addEventListener('touchstart', e => {
+      touchStartX = e.touches[0].clientX;
+      const img = document.getElementById('modalMainImg');
+      if (img) img.style.transition = 'none';
+    }, { passive: true });
+
+    imgWrap.addEventListener('touchmove', e => {
+      const dx = e.touches[0].clientX - touchStartX;
+      const img = document.getElementById('modalMainImg');
+      if (!img) return;
+
+      // Al primer movimiento significativo, crear la imagen entrante
+      if (!swipeImg && Math.abs(dx) > 8) {
+        goLeft = dx < 0;
+        const incomingIdx = currentImgIdx + (goLeft ? 1 : -1);
+        if (incomingIdx < 0 || incomingIdx >= allImages.length) return; // en el límite, ignorar
+        swipeImg = document.createElement('img');
+        swipeImg.className = 'modal-swipe-img';
+        swipeImg.src = allImages[incomingIdx];
+        swipeImg.style.transition = 'none';
+        swipeImg.style.transform = `translateX(${goLeft ? '100%' : '-100%'})`;
+        imgWrap.appendChild(swipeImg);
+      }
+
+      // Mover ambas imágenes juntas siguiendo el dedo
+      img.style.transform = `translateX(${dx}px)`;
+      if (swipeImg) {
+        swipeImg.style.transform = `translateX(calc(${goLeft ? '100%' : '-100%'} + ${dx}px))`;
+      }
+    }, { passive: true });
+
+    imgWrap.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      const img = document.getElementById('modalMainImg');
+      if (!img) return;
+
+      if (swipeImg && Math.abs(dx) > 40) {
+        // Completar la transición
+        img.style.transition = 'transform 0.22s ease';
+        img.style.transform = `translateX(${goLeft ? '-100%' : '100%'})`;
+        swipeImg.style.transition = 'transform 0.22s ease';
+        swipeImg.style.transform = 'translateX(0)';
+        setTimeout(() => {
+          goToImage(currentImgIdx + (goLeft ? 1 : -1));
+          const newImg = document.getElementById('modalMainImg');
+          if (newImg) { newImg.style.transition = 'none'; newImg.style.transform = 'translateX(0)'; }
+          swipeImg.remove(); swipeImg = null;
+        }, 220);
+      } else {
+        // Volver a la posición original
+        img.style.transition = 'transform 0.2s ease';
+        img.style.transform = 'translateX(0)';
+        if (swipeImg) {
+          swipeImg.style.transition = 'transform 0.2s ease';
+          swipeImg.style.transform = `translateX(${goLeft ? '100%' : '-100%'})`;
+          setTimeout(() => { if (swipeImg) { swipeImg.remove(); swipeImg = null; } }, 200);
+        }
+      }
+    }, { passive: true });
+  }
+
+  // Expandir imagen
+  document.getElementById('modalImgExpand').addEventListener('click', () => {
+    const src = allImages.length > 0 ? allImages[currentImgIdx] : null;
+    if (!src) return;
+    const lb = document.createElement('div');
+    lb.className = 'img-lightbox';
+    lb.innerHTML = `<img class="img-lightbox-img" src="${src}"><button class="img-lightbox-close">✕</button>`;
+    document.body.appendChild(lb);
+    requestAnimationFrame(() => lb.classList.add('open'));
+    const close = () => { lb.classList.remove('open'); setTimeout(() => lb.remove(), 300); };
+    lb.querySelector('.img-lightbox-close').addEventListener('click', e => { e.stopPropagation(); close(); });
+    lb.addEventListener('click', e => { if (e.target === lb) close(); });
+    document.addEventListener('keydown', function onKey(e) {
+      if (e.key === 'Escape') { close(); document.removeEventListener('keydown', onKey); }
+    });
   });
 
   // Compartir enlace
   const shareBtn = document.getElementById('modalShareBtn');
   shareBtn.addEventListener('click', () => {
     const url = `${location.origin}${location.pathname}?product=${p.id}`;
-    navigator.clipboard.writeText(url).then(() => {
-      shareBtn.textContent = '✓ Enlace copiado';
-      setTimeout(() => { shareBtn.textContent = '🔗 Compartir producto'; }, 2000);
-    }).catch(() => {
-      prompt('Copiá este enlace:', url);
-    });
+    if (navigator.share) {
+      navigator.share({ title: p.name, url });
+    } else {
+      navigator.clipboard.writeText(url).then(() => {
+        shareBtn.textContent = '✓';
+        setTimeout(() => { shareBtn.textContent = '🔗'; }, 2000);
+      }).catch(() => {
+        prompt('Copiá este enlace:', url);
+      });
+    }
   });
 
   // Agregar al carrito con validación
@@ -155,12 +271,13 @@ productModalBackdrop.addEventListener('click', closeProductModal);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeProductModal(); });
 
 // Clicks en la grilla: siempre abrir modal (para elegir talle/color)
-grid.addEventListener('click', e => {
-  const btn = e.target.closest('.add-cart-btn');
+function handleProductClick(e) {
   const card = e.target.closest('.product-card');
-  if ((btn || card) && card) {
+  if (card) {
     e.preventDefault();
     e.stopPropagation();
     openProductModal(card.dataset.productId);
   }
-});
+}
+grid.addEventListener('click', handleProductClick);
+document.getElementById('noResults').addEventListener('click', handleProductClick);

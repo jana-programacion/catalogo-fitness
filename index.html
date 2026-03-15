@@ -5,8 +5,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Clothes Fitness</title>
 <link rel="icon" type="image/png" href="https://i.postimg.cc/B6vzChFs/image.png">
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<!-- Preconnect: establece TCP/TLS anticipadamente -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://script.google.com">
+<link rel="dns-prefetch" href="https://i.postimg.cc">
+
+<!-- Fuentes no-bloqueantes: carga asíncrona, no retiene el primer render -->
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap"></noscript>
+
 <link rel="stylesheet" href="css/styles.css">
+
+<!-- Prefetch anticipado: arranca el fetch a la API ANTES de que carguen los scripts -->
+<script>
+(function(){
+  var CACHE_KEY = 'catalogo_products_v1';
+  var API = 'https://script.google.com/macros/s/AKfycbyLUp_SIZafExSc1VB3neUrnHBRiliKATG3A5KqsY01mxLaMpSGdbLZNK_nvqGOJ5K_MA/exec';
+  try {
+    var c = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+    if (!c || !c.data || !c.data.length || (Date.now() - c.ts) > 300000) {
+      window._productsFetch = fetch(API).then(function(r){ return r.json(); }).catch(function(){ return null; });
+    }
+  } catch(e) {
+    window._productsFetch = fetch(API).then(function(r){ return r.json(); }).catch(function(){ return null; });
+  }
+})();
+</script>
 
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=AW-878081562"></script>
@@ -80,9 +106,18 @@
     </select>
   </div>
 </div>
-<div class="products-loading" id="productsLoading"><div class="spinner"></div><p>Cargando productos...</p></div>
+<div class="products-loading hidden" id="productsLoading"><div class="spinner"></div><p>Cargando productos...</p></div>
 <div class="products-error" id="productsError"><span>⚠️</span><p>No pudimos cargar los productos</p><button class="retry-btn" id="retryBtn">Reintentar</button></div>
-<div class="products-grid" id="productsGrid"></div>
+<div class="products-grid" id="productsGrid">
+  <div class="product-card skeleton"><div class="product-img skeleton-img"></div><div class="product-info"><div class="skeleton-line w65"></div><div class="skeleton-line w40"></div></div></div>
+  <div class="product-card skeleton"><div class="product-img skeleton-img"></div><div class="product-info"><div class="skeleton-line w80"></div><div class="skeleton-line w45"></div></div></div>
+  <div class="product-card skeleton"><div class="product-img skeleton-img"></div><div class="product-info"><div class="skeleton-line w55"></div><div class="skeleton-line w35"></div></div></div>
+  <div class="product-card skeleton"><div class="product-img skeleton-img"></div><div class="product-info"><div class="skeleton-line w70"></div><div class="skeleton-line w50"></div></div></div>
+  <div class="product-card skeleton"><div class="product-img skeleton-img"></div><div class="product-info"><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div>
+  <div class="product-card skeleton"><div class="product-img skeleton-img"></div><div class="product-info"><div class="skeleton-line w75"></div><div class="skeleton-line w45"></div></div></div>
+  <div class="product-card skeleton"><div class="product-img skeleton-img"></div><div class="product-info"><div class="skeleton-line w65"></div><div class="skeleton-line w35"></div></div></div>
+  <div class="product-card skeleton"><div class="product-img skeleton-img"></div><div class="product-info"><div class="skeleton-line w80"></div><div class="skeleton-line w50"></div></div></div>
+</div>
 <div class="load-more-wrap" id="loadMoreWrap" style="display:none;">
   <button class="load-more-btn" id="loadMoreBtn">Ver más productos</button>
 </div>
@@ -96,14 +131,14 @@
 
 <section class="testimonials-section">
   <p class="testimonials-eyebrow">Opiniones</p>
-  <h2 class="testimonials-title">Lo que dicen nuestras clientas</h2>
+  <h2 class="testimonials-title">Lo que dicen nuestros clientos</h2>
   <div class="testimonials-ticker">
     <div class="testimonials-track" id="testimonialsTrack"></div>
   </div>
 </section>
 
 <footer><div class="footer-grid">
-  <div class="footer-col"><h5>Páginas</h5><a href="#">Inicio</a><a href="#">Productos</a><a href="#">Contacto</a></div>
+  <div class="footer-col"><h5>Páginas</h5><a href="#">Inicio</a><a href="#">Productos</a>
   <div class="footer-col"><h5>Contactanos</h5><p><a href="https://wa.me/5493489617189?text=Hola! Vengo desde la página web! Quiero hacerles una consulta." target="_blank">📞 3489617189</a></p></div>
   <div class="footer-col"><h5>Seguinos</h5><a href="https://www.instagram.com/my.clothesfitness/" class="social-link" target="_blank">📸 Instagram</a></div>
 </div></footer>

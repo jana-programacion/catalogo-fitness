@@ -28,12 +28,15 @@ function renderAll() {
   renderCategories();
   renderProducts();
   applyFilters();
+  loadCart();
 }
 
 async function fetchAndCache() {
-  const res = await fetch(SHEETS_API);
-  if (!res.ok) throw new Error('HTTP ' + res.status);
-  const data = await res.json();
+  // Usa la promesa prefetcheada desde el <head> si existe, evita una segunda request
+  const promise = window._productsFetch || fetch(SHEETS_API).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
+  window._productsFetch = null;
+  const data = await promise;
+  if (!data || !Array.isArray(data)) throw new Error('respuesta inválida');
   const parsed = parseProducts(data);
   try {
     localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data: parsed }));
