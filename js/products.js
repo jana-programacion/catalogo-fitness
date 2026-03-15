@@ -19,7 +19,7 @@ function parseProducts(data) {
     sizes: String(p.sizes || '').trim(),
     featured: p.featured === true || p.featured === 'TRUE' || p.featured === 'true',
     badge: String(p.badge || '').trim(),
-    extraImages: String(p.extraImages || '').trim().split(',').map(u => u.trim()).filter(Boolean),
+    extraImages: String(p.extraImages || '').trim().split('|').flatMap(seg => seg.split(',https://').map((u, i) => i === 0 ? u : 'https://' + u)).map(u => u.trim()).filter(Boolean),
   })).filter(p => p.name);
 }
 
