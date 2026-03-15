@@ -331,14 +331,16 @@ footer { background: var(--sky-50); padding: 48px 48px 24px; border-top: 1px sol
   .product-modal.open { transform: translateY(0) scale(1); }
   /* Layout interno: columna flex de altura fija */
   .product-modal-inner { display: flex; flex-direction: column; height: 100%; overflow: hidden; grid-template-columns: unset; }
-  /* Imagen: 44% de la altura del modal */
-  .modal-gallery { border-radius: 20px 20px 0 0; flex: 0 0 44%; overflow: hidden; }
+  /* Imagen: 40% de la altura del modal */
+  .modal-gallery { border-radius: 20px 20px 0 0; flex: 0 0 40%; overflow: hidden; }
   .modal-img-wrap { flex: 1; min-height: 0; aspect-ratio: unset; }
   .modal-main-img, .modal-main-placeholder { aspect-ratio: unset; }
   /* Ocultar miniaturas en mobile (tenemos dots + swipe) */
   .modal-thumbnails { display: none; }
+  /* Ocultar descripción en mobile para ganar espacio vertical */
+  .modal-desc { display: none; }
   /* Detalles: ocupan el resto y hacen scroll si hay overflow */
-  .modal-details { flex: 1; min-height: 0; overflow-y: auto; padding: 16px 18px; padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+  .modal-details { flex: 1; min-height: 0; overflow-y: auto; padding: 14px 18px; padding-bottom: max(14px, env(safe-area-inset-bottom)); gap: 10px; }
   .modal-name { font-size: 20px; }
   .modal-price { font-size: 22px; }
   .modal-dots { display: flex; }
